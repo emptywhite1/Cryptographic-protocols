@@ -1,0 +1,7 @@
+.wrapper{
+  text-align: center;
+  border-bottom: 2px solid lightgray;
+}
+.wrapper > h1{
+  padding: 20px;
+}
