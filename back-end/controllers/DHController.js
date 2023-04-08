@@ -1,4 +1,4 @@
-const DHMath = require("../utils/DHMath");
+const DHModel = require("../models/DHModel");
 const GMath = require("../utils/GeneralMath");
 
 function getServerKey(req, res) {
@@ -8,10 +8,9 @@ function getServerKey(req, res) {
 
   //get random server private key
   b = GMath.getRandomBigInt(p);
-  let pKey = DHMath.computePubKey(p, g, b);
-  let sharedKey = DHMath.computeSharedKey(p, A, b);
-  console.log("private key:" + b);
-  console.log("shared key: " + sharedKey);
+  let pKey = DHModel.computePubKey(p, g, b);
+  let sharedKey = DHModel.computeSharedKey(p, A, b);
+ 
 
   res.send({
     serverPublicKey: pKey.toString(),

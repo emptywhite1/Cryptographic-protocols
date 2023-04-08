@@ -49,7 +49,22 @@ export const DHValidation = (e) => {
   return true;
 }
  
+export const SchnorrValidation = (e) => {
+  e.preventDefault();
 
+  const pInput = document.getElementById("username");
+  const password = document.getElementById("password");
+ 
+
+  // Check if all input fields are filled
+  if (!pInput.value || !password.value) {
+    alert("Please fill in all input fields.");
+    return false;
+  }
+  
+
+  return true;
+}
 
 
 

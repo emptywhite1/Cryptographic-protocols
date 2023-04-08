@@ -1,4 +1,4 @@
-const gMath = require('./GeneralMath')
+const gMath = require('../utils/GeneralMath')
 
 function computePubKey (prime, generator, privateKey){
 	

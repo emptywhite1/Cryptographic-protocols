@@ -123,6 +123,9 @@ function isPrimitiveRoot(g, p) {
 function getRandomBigInt(maxNum) {
   const byteLength = maxNum.toString(16).length / 2;
   let randNum = BigInt("0x" + crypto.randomBytes(byteLength).toString("hex"));
+  while (randNum === maxNum) {
+    randNum = BigInt("0x" + crypto.randomBytes(byteLength).toString("hex"));
+  }
   randNum %= maxNum;
   return randNum;
 }

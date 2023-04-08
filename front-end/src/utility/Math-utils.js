@@ -1,5 +1,7 @@
 /* global BigInt */
 
+
+
 // Javascript program Miller-Rabin primality test
 // based on JavaScript code found at https://www.geeksforgeeks.org/primality-test-set-3-miller-rabin/
 
@@ -125,4 +127,56 @@ export const computeDHKey = function (prime, generator, privateKey) {
   let A = power(g, a, p);
 
   return A;
+};
+
+export const stringToBigInt = function(str, p){
+  let asciiSum = "";
+  for (let i = 0; i < str.length; i++) {
+    asciiSum += str.charCodeAt(i);
+  }
+  return BigInt("0x" + asciiSum) % p;
+} 
+
+export const computeSchnorrKey = function (prime, generator, password) {
+
+  const x = BigInt(stringToBigInt(password, prime))
+  const p = BigInt(prime);
+  const g = BigInt(generator);
+  
+  return power(g, x, p);
+};
+
+export const getRandomBigInt = function(maxNum) {
+  const maxNumStr = maxNum.toString();
+  const maxNumLen = maxNumStr.length;
+  let randNumStr = '';
+
+  for (let i = 0; i < maxNumLen; i++) {
+    randNumStr += Math.floor(Math.random() * 10).toString();
+  }
+
+  const randNum = BigInt(randNumStr);
+
+  if (randNum >= maxNum || randNum === 0n) {
+    return getRandomBigInt(maxNum);
+  }
+
+  return randNum;
+}
+export const computeSchnorrAnnouncement = function (prime, generator, nonce) {
+
+  const u = BigInt(nonce)
+  const p = BigInt(prime);
+  const g = BigInt(generator);
+  return power(g, u, p);
+};
+
+export const computeSchnorrResponse = function (nonce, password, challenge, prime) {
+
+  const u = BigInt(nonce)
+  const q = BigInt(prime) - BigInt(1);
+  const x = stringToBigInt(password, prime)
+  const c = BigInt(challenge)
+
+  return (u + c * x) % q;
 };

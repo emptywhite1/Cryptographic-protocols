@@ -3,13 +3,13 @@ import Header from "../components/Header";
 import "../style/DiffieHellman.css";
 import { computeDHKey } from "../utility/Math-utils";
 import { DHValidation } from "../utility/validation";
-import { BaseUrl } from "../utility/BaseUrl";
+import { BASE_URL } from "../utility/Constant";
 import axios from "axios";
 
 function DiffieHellman() {
   const [p, setP] = useState("");
   const [g, setG] = useState("");
-  const [a, setA] = useState("");
+  const [a, setA] = useState(""); // user privateKey
   const [publicKey, setPublicKey] = useState("");
   const [response, setResponse] = useState("");
 
@@ -24,7 +24,7 @@ function DiffieHellman() {
         A: publicKey.toString(),
       };
       axios
-        .post(`${BaseUrl}/dh/getServerKey`, data)
+        .post(`${BASE_URL}/dh/getServerKey`, data)
         .then((res) => {
           setResponse(res.data);
         })
@@ -81,7 +81,7 @@ function DiffieHellman() {
         </div>
       </div>
       <hr></hr>
-      <div id="response" className="row">
+      <div id="info" className="row">
         <div className="col-md-6 ">
           <h2>Transmited Data</h2>
           <p>Prime: {p}</p>

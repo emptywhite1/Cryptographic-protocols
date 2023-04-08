@@ -3,12 +3,14 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import Dashboard from "./components/Dashboard";
-// import Banner from './components/Banner';
 import HomePage from "./pages/HomePage";
 import DiffieHellman from "./pages/DiffieHellman";
-// import SubPage1 from './pages/SubPage1';
-// import SubPage2 from './pages/SubPage2';
-// import SubPage3 from './pages/SubPage3';
+import SchnorrRegister from "./pages/SchnorrRegister";
+import SchnorrLogin from "./pages/SchnorrLogin";
+import ChaumSigning from "./pages/ChaumSigning";
+import ChaumVerifying from "./pages/ChaumVerifying";
+
+
 
 class App extends React.Component {
   render() {
@@ -28,6 +30,22 @@ class App extends React.Component {
               <Route
                 path="/Diffie-Hellman"
                 element={<DiffieHellman/>}
+              />
+              <Route
+                path="/Schnorr-register"
+                element={<SchnorrRegister/>}
+              />
+              <Route
+                path="/Schnorr-login"
+                element={<SchnorrLogin/>}
+              />
+              <Route
+                path="/Chaum-signing"
+                element={<ChaumSigning/>}
+              />
+              <Route
+                path="/Chaum-verifying"
+                element={<ChaumVerifying/>}
               />
               <Route path="*" element={<h1>404</h1>} />
               
