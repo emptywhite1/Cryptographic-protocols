@@ -142,20 +142,20 @@ function SchnorrLogin() {
       <div id="info">
         <div>
           <h2>Fixed Data</h2>
-          <p>Prime: {SCHNORR_PRIME.toString()}</p>
-          <p>Generator: {SCHNORR_GENERATOR.toString()}</p>
+          <p><b>Prime:</b> {SCHNORR_PRIME.toString()}</p>
+          <p><b>Generator:</b> {SCHNORR_GENERATOR.toString()}</p>
         </div>
         <div>
           <h2>Transmitted Data</h2>
-          <p>Your Public Key: {publicKey.toString()} </p>
-          <p>Announcement: {announcement.toString()} </p>
-          <p>Challenge: {challenge.toString()} </p>
-          <p>Response: {response.toString()}</p>
+          <p><b>Your Public Key:</b> {publicKey.toString()} </p>
+          <p><b>Announcement:</b> {announcement.toString()} </p>
+          <p><b>Challenge:</b> {challenge.toString()} </p>
+          <p><b>Response:</b> {response.toString()}</p>
         </div>
 
         <div>
           <h2>Secret Data</h2>
-          <p>Your Private Key (generate from password): {privateKey.toString()} </p>
+          <p><b>Your Private Key (generate from password):</b> {privateKey.toString()} </p>
         </div>
       </div>
     </div>

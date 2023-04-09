@@ -1,46 +1,64 @@
 import React, { useState } from "react";
 import Header from "../components/Header";
 import "../style/DiffieHellman.css";
-import { computeDHKey } from "../utility/Math-utils";
-import { DHValidation } from "../utility/validation";
-import { BASE_URL } from "../utility/Constant";
+import {
+  computeBlindedMessage,
+  getBlindFactor,
+  getR,
+  stringToBigInt,
+  unblindSignature,
+} from "../utility/Math-utils";
+import { ChaumValidation } from "../utility/validation";
+import { BASE_URL, CHAUM_N, CHAUM_PUBLICKEY } from "../utility/Constant";
 import axios from "axios";
 
 function ChaumSigning() {
   const [message, setMessage] = useState("");
-  const [g, setG] = useState("");
-  const [a, setA] = useState(""); // user privateKey
-  const [publicKey, setPublicKey] = useState("");
-  const [response, setResponse] = useState("");
+  const [blindMessage, setBlindMessage] = useState("");
+  const [blindedSignature, setblindedSignature] = useState("");
+  const [signature, setSignature] = useState("");
+  const [randomBlindFactor, setRandomBlindFactor] = useState("");
 
   const handleSubmit = (event) => {
-    event.preventDefault()
-    // if (DHValidation(event)) {
-    //   const publicKey = computeDHKey(p, g, a);
-    //   setPublicKey(publicKey.toString());
+    if (ChaumValidation(event)) {
+      const r = getR(CHAUM_N);
+      const blindFactor = getBlindFactor(r, CHAUM_N, CHAUM_PUBLICKEY);
+      const numericMessage = stringToBigInt(message, CHAUM_N);
+      const blindedMessage = computeBlindedMessage(
+        numericMessage,
+        blindFactor,
+        CHAUM_N
+      );
 
-    //   const data = {
-    //     p: p,
-    //     g: g,
-    //     A: publicKey.toString(),
-    //   };
-    //   axios
-    //     .post(`${BASE_URL}/dh/getServerKey`, data)
-    //     .then((res) => {
-    //       setResponse(res.data);
-    //     })
-    //     .catch((error) => {
-    //       console.error(error);
-    //     });
-    // }
-    
+      setRandomBlindFactor(blindFactor.toString())
+      setBlindMessage(blindedMessage.toString());
+
+      const data = {
+        message: blindedMessage.toString(),
+      };
+
+      axios
+        .post(`${BASE_URL}/chaum/requestSignature`, data)
+        .then((res) => {
+          setblindedSignature(res.data.signature);
+          const unblindedSignature = unblindSignature(
+            res.data.signature,
+            r,
+            CHAUM_N
+          );
+          setSignature(unblindedSignature.toString());
+        })
+        .catch((error) => {
+          alert(error, message);
+        });
+    }
   };
 
   return (
     <div>
       <Header name="Chaum Blind Signature" />
       <div className="card form-wrapper">
-      <div className="card-header">Signing form</div>
+        <div className="card-header">Signing form</div>
         <div className="card-body">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -73,15 +91,22 @@ function ChaumSigning() {
       </div>
       <hr></hr>
       <div id="info" className="row">
-        <div>
-          <h4>Your blinded message</h4>
-          <p>hello</p>
+      <div>
+          <h4>Your random blind factor</h4>
+          <p>{randomBlindFactor}</p>
         </div>
         <div>
-          <h4>Your blinded signature</h4>
-          <p>hello</p>
-          <h4>Your unblinded signature(use this with the message in verification page)</h4>
-          <p>hello</p>
+          <h4>Your blinded message (what the server see)</h4>
+          <p>{blindMessage}</p>
+        </div>
+        <div>
+          <h4>Your blinded signature (signed on the blinded message)</h4>
+          <p>{blindedSignature}</p>
+          <h4>
+            Your unblinded signature(use this to verify the message in verification
+            page)
+          </h4>
+          <p>{signature}</p>
         </div>
       </div>
     </div>

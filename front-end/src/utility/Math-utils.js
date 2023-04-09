@@ -1,7 +1,5 @@
 /* global BigInt */
 
-
-
 // Javascript program Miller-Rabin primality test
 // based on JavaScript code found at https://www.geeksforgeeks.org/primality-test-set-3-miller-rabin/
 
@@ -129,27 +127,26 @@ export const computeDHKey = function (prime, generator, privateKey) {
   return A;
 };
 
-export const stringToBigInt = function(str, p){
+export const stringToBigInt = function (str, p) {
   let asciiSum = "";
   for (let i = 0; i < str.length; i++) {
     asciiSum += str.charCodeAt(i);
   }
   return BigInt("0x" + asciiSum) % p;
-} 
+};
 
 export const computeSchnorrKey = function (prime, generator, password) {
-
-  const x = BigInt(stringToBigInt(password, prime))
+  const x = BigInt(stringToBigInt(password, prime));
   const p = BigInt(prime);
   const g = BigInt(generator);
-  
+
   return power(g, x, p);
 };
 
-export const getRandomBigInt = function(maxNum) {
+export const getRandomBigInt = function (maxNum) {
   const maxNumStr = maxNum.toString();
   const maxNumLen = maxNumStr.length;
-  let randNumStr = '';
+  let randNumStr = "";
 
   for (let i = 0; i < maxNumLen; i++) {
     randNumStr += Math.floor(Math.random() * 10).toString();
@@ -162,21 +159,96 @@ export const getRandomBigInt = function(maxNum) {
   }
 
   return randNum;
-}
+};
 export const computeSchnorrAnnouncement = function (prime, generator, nonce) {
-
-  const u = BigInt(nonce)
+  const u = BigInt(nonce);
   const p = BigInt(prime);
   const g = BigInt(generator);
   return power(g, u, p);
 };
 
-export const computeSchnorrResponse = function (nonce, password, challenge, prime) {
-
-  const u = BigInt(nonce)
+export const computeSchnorrResponse = function (
+  nonce,
+  password,
+  challenge,
+  prime
+) {
+  const u = BigInt(nonce);
   const q = BigInt(prime) - BigInt(1);
-  const x = stringToBigInt(password, prime)
-  const c = BigInt(challenge)
+  const x = stringToBigInt(password, prime);
+  const c = BigInt(challenge);
 
   return (u + c * x) % q;
+};
+
+export const checkGCD = function (a, b) {
+  const gcd = (a, b) => {
+    if (b === 0n) {
+      return a;
+    }
+    return gcd(b, a % b);
+  };
+  return gcd(a, b) === 1n;
+};
+
+export const getR = function (chaumN) {
+  let r;
+  do {
+    r = getRandomBigInt(chaumN);
+  } while (!checkGCD(r, chaumN));
+  return r;
+};
+
+export const getBlindFactor = function (r, chaumN, publicKey) {
+  const blindFactor = power(r, publicKey, chaumN);
+  return blindFactor;
+};
+
+export const computeBlindedMessage = function (
+  numericMessage,
+  blindFactor,
+  chaumN
+) {
+  return (numericMessage * blindFactor) % chaumN;
+};
+
+export const unblindSignature = function (blindedSignature, r, chaumN) {
+  const rInverse = modInverse(r, chaumN);
+  const bSignature = BigInt(blindedSignature);
+  return (bSignature * rInverse) % chaumN;
+};
+export const modInverse = function (number, mod) {
+  const a = number;
+  const n = mod;
+  let t = 0n;
+  let newt = 1n;
+  let r = n;
+  let newr = a;
+
+  while (newr !== 0n) {
+    let quotient = r / newr;
+
+    [t, newt] = [newt, t - quotient * newt];
+    [r, newr] = [newr, r - quotient * newr];
+  }
+
+  if (r > 1n) {
+    throw new Error("a is not invertible");
+  }
+
+  if (t < 0n) {
+    t += n;
+  }
+
+  return t;
+};
+
+export const calculatePrivateKey = function () {
+  const p =
+    547340383682117520798650035135656395481389963285775976108215099322508386141878177632883217495196614653381941734640444039617548576136943045116463713937n;
+  const q =
+    827425321347070857571601850577711682088450109992424147819756234151141123241440124201411683469030722587483219307421445622021923428689831657385548035757n;
+  const phi = (p - 1n) * (q - 1n);
+  
+  return ;
 };

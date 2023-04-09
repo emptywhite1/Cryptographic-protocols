@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const DHRoutes = require('./routes/DHRoutes');
 const SchnorrRoutes = require('./routes/SchnorrRoutes');
+const ChaumRoutes = require('./routes/ChaumRoutes');
 const session = require('express-session');
 
 const app = express();
@@ -27,6 +28,7 @@ app.options('*', cors({
 app.use(bodyParser.json());
 app.use('/api/dh', DHRoutes);
 app.use('/api/schnorr', SchnorrRoutes);
+app.use('/api/chaum', ChaumRoutes);
 
 
 app.listen(3001, () => {

@@ -52,17 +52,32 @@ export const DHValidation = (e) => {
 export const SchnorrValidation = (e) => {
   e.preventDefault();
 
-  const pInput = document.getElementById("username");
+  const username = document.getElementById("username");
   const password = document.getElementById("password");
  
 
   // Check if all input fields are filled
-  if (!pInput.value || !password.value) {
+  if (!username.value || !password.value) {
     alert("Please fill in all input fields.");
     return false;
   }
   
 
+  return true;
+}
+
+export const ChaumValidation = (e) => {
+  e.preventDefault();
+
+  const message = document.getElementById("message");
+  
+  // Check if all input fields are filled
+  if (!message.value) {
+    alert("Please fill in all input fields.");
+    return false;
+  }
+  
+  
   return true;
 }
 

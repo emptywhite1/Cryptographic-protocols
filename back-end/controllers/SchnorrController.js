@@ -1,17 +1,12 @@
-const { generateKeyPairSync } = require("crypto");
-const schnorrModel = require("../models/SchnorrModel");
-const sql = require("../db/DbConnection");
+const SchnorrModel = require("../models/SchnorrModel");
 
-const p = 14017716757242392797n;
-const g = 1737185883727607545n;
 
 // Register a user
 async function register(req, res) {
   const { username, password } = req.body;
-  console.log("Username:", username);
-  console.log("Password:", password);
+
   try {
-    await schnorrModel.register(username, password);
+    await SchnorrModel.register(username, password);
     res.json({ message: "User registered successfully" });
   } catch (err) {
     console.error(err);
@@ -24,9 +19,9 @@ async function login(req, res) {
   let { username, announcement } = req.body;
   try {
     const publicKey = (
-      await schnorrModel.getUserPublicKey(username)
+      await SchnorrModel.getUserPublicKey(username)
     ).toString();
-    const challenge = schnorrModel.generateChallenge().toString();
+    const challenge = SchnorrModel.generateChallenge().toString();
     announcement = announcement.toString();
 
     req.session.username = username;
@@ -58,7 +53,7 @@ function verifyResponse(req, res) {
   const h = BigInt(publicKey);
   const a = BigInt(announcement);
   const c = BigInt(challenge);
-  if(schnorrModel.verifyResponse(r, h, c, a)){
+  if(SchnorrModel.verifyResponse(r, h, c, a)){
     res.json({message: "verification success"})
   }else{
     res.json({message: "verification failed"})

@@ -5,7 +5,7 @@ function HomePage() {
   return (
     <div>
       <Header name="Home" />
-      <TestPage></TestPage>
+      <h1>this page should contain instruction for the app</h1>
     </div>
   );
 }
