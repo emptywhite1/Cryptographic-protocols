@@ -70,9 +70,18 @@ export const ChaumValidation = (e) => {
   e.preventDefault();
 
   const message = document.getElementById("message");
-  
-  // Check if all input fields are filled
-  if (!message.value) {
+  const signature = document.getElementById("signature");
+  if(signature != null){
+    if (!message.value || !signature.value) {
+      alert("Please fill in all input fields.");
+      return false;
+    }
+    if(!isNumber(signature.value)){
+      alert("signature should be number")
+      return false
+    }
+  }
+  else if (!message.value) {
     alert("Please fill in all input fields.");
     return false;
   }
