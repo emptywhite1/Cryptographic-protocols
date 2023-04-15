@@ -9,14 +9,16 @@ import axios from "axios";
 function DiffieHellman() {
   const [p, setP] = useState("");
   const [g, setG] = useState("");
-  const [a, setA] = useState(""); // user privateKey
-  const [publicKey, setPublicKey] = useState("");
-  const [response, setResponse] = useState("");
+  const [yourPrivateKey, setYourPrivateKey] = useState(""); // user privateKey
+  const [yourPublicKey, setYourPublicKey] = useState("");
+  const [serverPublicKey, setServerPublicKey] = useState("");
+  const [sharedKey, setSharedKey] = useState("");
+
 
   const handleSubmit = (event) => {
     if (DHValidation(event)) {
-      const publicKey = computeDHKey(p, g, a);
-      setPublicKey(publicKey.toString());
+      const publicKey = computeDHKey(p, g, yourPrivateKey);
+      setYourPublicKey(publicKey.toString());
 
       const data = {
         p: p,
@@ -26,7 +28,9 @@ function DiffieHellman() {
       axios
         .post(`${BASE_URL}/dh/getServerKey`, data)
         .then((res) => {
-          setResponse(res.data);
+          setServerPublicKey(res.data.serverPublicKey)
+          const sKey = computeDHKey(p, res.data.serverPublicKey, yourPrivateKey)
+          setSharedKey(sKey.toString())
         })
         .catch((error) => {
           console.error(error);
@@ -51,7 +55,7 @@ function DiffieHellman() {
               />
             </div>
             <div className="form-group">
-              <label>Generator g (Primitive Root mod P)</label>
+              <label>Generator g (Primitive Root mod p)</label>
               <input
                 type="text"
                 className="form-control"
@@ -66,8 +70,8 @@ function DiffieHellman() {
                 type="text"
                 className="form-control"
                 id="Private-key"
-                value={a}
-                onChange={(e) => setA(e.target.value)}
+                value={yourPrivateKey}
+                onChange={(e) => setYourPrivateKey(e.target.value)}
               />
             </div>
             <button
@@ -81,21 +85,19 @@ function DiffieHellman() {
         </div>
       </div>
       <hr></hr>
-      <div id="info" className="row">
-        <div className="col-md-6 ">
+      <div id="info" className="row justify-content-center">
+        <div className="col-md-4 ">
           <h2>Transmited Data</h2>
           <p>Prime: {p}</p>
           <p>Generator: {g}</p>
-          <p>Your Public Key: {publicKey}</p>
-          <p>Server Public Key: {response.serverPublicKey}</p>
+          <p>Your Public Key: {yourPublicKey}</p>
+          <p>Server Public Key: {serverPublicKey}</p>
           
         </div>
 
-        <div className="col-md-6">
-          <h2>Secret Data <span style={{fontSize: '45%', color: "gray"}}>(in reality, not this app)</span></h2>
-          <p>Your Private Key: {a}</p>
-          <p>Server Private Key: {response.serverPrivateKey}</p>
-          <p>Shared Key: {response.sharedKey}</p>
+        <div className="col-md-4">
+          <h2>Secret Data</h2>
+          <p>Shared Key: {sharedKey}</p>
         </div>
       </div>
     </div>

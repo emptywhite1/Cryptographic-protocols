@@ -23,10 +23,10 @@ function SchnorrRegister() {
   const handleSubmit = (event) => {
     if (SchnorrValidation(event)) {
       setIsSubmitting(true);
-      setUserPublicKey(handlePassword())
+      const publicKey = handlePassword()
       const data = {
         username: username,
-        password: handlePassword(),
+        password: publicKey,
       };
       
       axios
@@ -34,9 +34,11 @@ function SchnorrRegister() {
         .then((response) => {
             alert(response.data.message)
             setIsSubmitting(false)
+            setUserPublicKey(publicKey)
         })
         .catch((error) => {
-          console.error(error);
+          alert(error.response.data.message)
+          setIsSubmitting(false)
         });
       setTimeout(() => {
         setIsSubmitting(false);
@@ -93,7 +95,7 @@ function SchnorrRegister() {
       </div>
       <hr></hr>
       <div id="info">
-        <h4 style={{ wordWrap: 'break-word' }}>Your publicKey (will be store by server):  {userPublicKey}</h4>
+        <h4 style={{ wordWrap: 'break-word' }}>Your Public Key:  {userPublicKey}</h4>
       </div>
     </div>
   );

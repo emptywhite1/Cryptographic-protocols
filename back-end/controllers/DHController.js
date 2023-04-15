@@ -11,11 +11,11 @@ function getServerKey(req, res) {
   let pKey = DHModel.computePubKey(p, g, b);
   let sharedKey = DHModel.computeSharedKey(p, A, b);
  
+  console.log("Server DH private key: " + b)
+  console.log("DH shared key: " + sharedKey)
 
   res.send({
     serverPublicKey: pKey.toString(),
-    serverPrivateKey: b.toString(),
-    sharedKey: sharedKey.toString()
   });
 }
 

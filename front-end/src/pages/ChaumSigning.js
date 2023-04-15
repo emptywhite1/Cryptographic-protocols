@@ -17,7 +17,6 @@ function ChaumSigning() {
   const [blindMessage, setBlindMessage] = useState("");
   const [blindedSignature, setblindedSignature] = useState("");
   const [signature, setSignature] = useState("");
-  const [randomBlindFactor, setRandomBlindFactor] = useState("");
 
   const handleSubmit = (event) => {
     if (ChaumValidation(event)) {
@@ -30,7 +29,6 @@ function ChaumSigning() {
         CHAUM_N
       );
 
-      setRandomBlindFactor(blindFactor.toString())
       setBlindMessage(blindedMessage.toString());
 
       const data = {
@@ -41,6 +39,7 @@ function ChaumSigning() {
         .post(`${BASE_URL}/chaum/requestSignature`, data)
         .then((res) => {
           setblindedSignature(res.data.signature);
+
           const unblindedSignature = unblindSignature(
             res.data.signature,
             r,
@@ -91,10 +90,7 @@ function ChaumSigning() {
       </div>
       <hr></hr>
       <div id="info" className="row">
-      <div>
-          <h4>Your random blind factor</h4>
-          <p>{randomBlindFactor}</p>
-        </div>
+        <div></div>
         <div>
           <h4>Your blinded message (what the server see)</h4>
           <p>{blindMessage}</p>
@@ -103,8 +99,8 @@ function ChaumSigning() {
           <h4>Your blinded signature (signed on the blinded message)</h4>
           <p>{blindedSignature}</p>
           <h4>
-            Your unblinded signature(use this to verify the message in verification
-            page)
+            Your unblinded signature(use this to verify the message in
+            verification page)
           </h4>
           <p>{signature}</p>
         </div>

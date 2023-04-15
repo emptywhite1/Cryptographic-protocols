@@ -7,13 +7,16 @@ const g = 2918093761015536343559170456283073517854672716808510511125266679977751
 const SchnorrModel = {
   async register(username, password) {
     const query = {
-      text: "INSERT INTO schnorr_user (username, password) VALUES (?, ?) ON DUPLICATE KEY UPDATE password = ?",
+      text: "INSERT INTO schnorr_user (username, password) VALUES (?, ?)",
       values: [username, password, password],
     };
     try {
       await sql.query(query.text, query.values);
     } catch (error) {
       console.error(error);
+      if(error.code == "ER_DUP_ENTRY" ){
+        throw new Error("User already exist");
+      }
       throw new Error("Failed to register user");
     }
   },

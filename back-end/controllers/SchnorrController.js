@@ -7,10 +7,11 @@ async function register(req, res) {
 
   try {
     await SchnorrModel.register(username, password);
+    console.log("resgistered user: " + username + " || password: " + password )
     res.json({ message: "User registered successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message });
   }
 }
 
@@ -24,15 +25,16 @@ async function login(req, res) {
     const challenge = SchnorrModel.generateChallenge().toString();
     announcement = announcement.toString();
 
+  
     req.session.username = username;
     req.session.announcement = announcement;
     req.session.challenge = challenge;
     req.session.publicKey = publicKey;
 
     const sessionId = req.session.id;
-
+    
     res.cookie('sessionId', sessionId);
-    res.json({ challenge: challenge, publicKey: publicKey});
+    res.json({ challenge: challenge});
   } catch (err) {
     console.error(err);
     if (err.message == "User not found") {
