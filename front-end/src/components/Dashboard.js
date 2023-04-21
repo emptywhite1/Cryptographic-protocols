@@ -16,7 +16,7 @@ function Dashboard() {
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
-        <Nav.Link href="/Schnorr-login">Schnorr Authentication</Nav.Link>
+        <Nav.Link href="/Schnorr-login">Schnorr authentication</Nav.Link>
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/Chaum-signing">Chaum blind signature</Nav.Link>

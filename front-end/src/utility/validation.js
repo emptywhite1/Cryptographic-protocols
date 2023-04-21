@@ -41,8 +41,8 @@ export const DHValidation = (e) => {
   }
 
   // Check if private key is bigger than 1 and smaller than p
-  if (privateKey <= 1 || privateKey >= p) {
-    alert("The private key must be bigger than 1 and smaller than P.");
+  if (privateKey < 1 || privateKey >= p) {
+    alert("The private key must be bigger than 0 and smaller than P.");
     return false;
   }
 
