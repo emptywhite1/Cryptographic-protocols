@@ -1,19 +1,15 @@
-import React, { useState } from "react";
-import { Button, Form, Row, Col } from "react-bootstrap";
+/* global BigInt */
 import axios from "axios";
-import "../style/Schnorr.css";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
-import { SchnorrValidation } from "../utility/validation";
+import "../style/Schnorr.css";
+import { BASE_URL } from "../utility/Constant";
 import {
-  getRandomBigInt,
   computeSchnorrAnnouncement,
   computeSchnorrResponse,
+  getRandomBigInt,
 } from "../utility/Math-utils";
-import {
-  SCHNORR_PRIME,
-  SCHNORR_GENERATOR,
-  BASE_URL,
-} from "../utility/Constant";
+import { SchnorrValidation } from "../utility/validation";
 
 const { withCredentials } = axios.defaults;
 axios.defaults.withCredentials = true;
@@ -25,20 +21,31 @@ function SchnorrLogin() {
   const [challenge, setChallenge] = useState("");
   const [announcement, setAnnouncement] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modulo, setModulo] = useState(null);
+  const [generator, setGenerator] = useState(null);
+
+  useEffect(() => {
+    async function getPublicData() {
+      const response = await axios.get(`${BASE_URL}/schnorr/getPublicData`);
+      setModulo(BigInt(response.data.modulo));
+      setGenerator(BigInt(response.data.generator));
+    }
+    getPublicData();
+  }, []);
 
   const handleSubmit = (event) => {
     if (SchnorrValidation(event)) {
-      const nonce = getRandomBigInt(SCHNORR_PRIME);
+      const nonce = getRandomBigInt(modulo);
       setIsSubmitting(true);
       setAnnouncement(
-        computeSchnorrAnnouncement(SCHNORR_PRIME, SCHNORR_GENERATOR, nonce)
+        computeSchnorrAnnouncement(modulo, generator, nonce)
       );
 
       const loginData = {
         username: username,
         announcement: computeSchnorrAnnouncement(
-          SCHNORR_PRIME,
-          SCHNORR_GENERATOR,
+          modulo,
+          generator,
           nonce
         ).toString(),
       };
@@ -48,12 +55,12 @@ function SchnorrLogin() {
         .then((response) => {
           const challenge = response.data.challenge;
           setChallenge(challenge);
-          
+
           const res = computeSchnorrResponse(
             nonce,
             password,
             challenge,
-            SCHNORR_PRIME
+            modulo
           );
 
           setResponse(res);
@@ -132,12 +139,17 @@ function SchnorrLogin() {
       </div>
       <hr></hr>
       <div id="info">
-        
         <div>
           <h2>Transmitted Data</h2>
-          <p><b>Announcement:</b> {announcement.toString()} </p>
-          <p><b>Challenge:</b> {challenge.toString()} </p>
-          <p><b>Response:</b> {response.toString()}</p>
+          <p>
+            <b>Announcement:</b> {announcement.toString()}{" "}
+          </p>
+          <p>
+            <b>Challenge:</b> {challenge.toString()}{" "}
+          </p>
+          <p>
+            <b>Response:</b> {response.toString()}
+          </p>
         </div>
       </div>
     </div>

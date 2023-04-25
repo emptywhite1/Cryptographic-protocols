@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+/* global BigInt */
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "../style/DiffieHellman.css";
+import { BASE_URL } from "../utility/Constant";
 import {
   computeBlindedMessage,
   getBlindFactor,
@@ -9,26 +12,35 @@ import {
   unblindSignature,
 } from "../utility/Math-utils";
 import { ChaumValidation } from "../utility/validation";
-import { BASE_URL, CHAUM_N, CHAUM_PUBLICKEY } from "../utility/Constant";
-import axios from "axios";
 
 function ChaumSigning() {
   const [message, setMessage] = useState("");
   const [blindMessage, setBlindMessage] = useState("");
   const [blindedSignature, setblindedSignature] = useState("");
   const [signature, setSignature] = useState("");
+  const [modulo, setModulo] = useState(null);
+  const [publicKey, setPublicKey] = useState(null);
+
+  useEffect(() => {
+    async function getPublicData() {
+      const response = await axios.get(`${BASE_URL}/chaum/getPublicData`);
+      setModulo(BigInt(response.data.modulo))
+      setPublicKey(BigInt(response.data.publicKey))
+    }
+    getPublicData();
+    
+  }, []);
 
   const handleSubmit = (event) => {
     if (ChaumValidation(event)) {
-      const r = getR(CHAUM_N);
-      const blindFactor = getBlindFactor(r, CHAUM_N, CHAUM_PUBLICKEY);
-      const numericMessage = stringToBigInt(message, CHAUM_N);
+      const r = getR(modulo);
+      const blindFactor = getBlindFactor(r, modulo, publicKey);
+      const numericMessage = stringToBigInt(message, modulo);
       const blindedMessage = computeBlindedMessage(
         numericMessage,
         blindFactor,
-        CHAUM_N
+        modulo
       );
-
       setBlindMessage(blindedMessage.toString());
 
       const data = {
@@ -43,7 +55,7 @@ function ChaumSigning() {
           const unblindedSignature = unblindSignature(
             res.data.signature,
             r,
-            CHAUM_N
+            modulo
           );
           setSignature(unblindedSignature.toString());
         })

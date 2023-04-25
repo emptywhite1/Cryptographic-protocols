@@ -1,5 +1,7 @@
 /* global BigInt */
 
+import CryptoJS from 'crypto-js';
+
 // Javascript program Miller-Rabin primality test
 // based on JavaScript code found at https://www.geeksforgeeks.org/primality-test-set-3-miller-rabin/
 
@@ -128,11 +130,9 @@ export const computeDHKey = function (prime, generator, privateKey) {
 };
 
 export const stringToBigInt = function (str, p) {
-  let asciiSum = "";
-  for (let i = 0; i < str.length; i++) {
-    asciiSum += str.charCodeAt(i);
-  }
-  return BigInt("0x" + asciiSum) % p;
+  const hash = CryptoJS.SHA256(str).toString();
+  const num = BigInt(`0x${hash}`);
+  return num % p;
 };
 
 export const computeSchnorrKey = function (prime, generator, password) {
@@ -243,12 +243,3 @@ export const modInverse = function (number, mod) {
   return t;
 };
 
-export const calculatePrivateKey = function () {
-  const p =
-    547340383682117520798650035135656395481389963285775976108215099322508386141878177632883217495196614653381941734640444039617548576136943045116463713937n;
-  const q =
-    827425321347070857571601850577711682088450109992424147819756234151141123241440124201411683469030722587483219307421445622021923428689831657385548035757n;
-  const phi = (p - 1n) * (q - 1n);
-  
-  return ;
-};

@@ -1,6 +1,14 @@
 const ChaumModel = require("../models/ChaumModel");
 
-// Register a user
+function getPublicData(req, res){
+  try {
+    res.json(ChaumModel.getPublicData())
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
 function signing(req, res) {
   const { message } = req.body;
   try {
@@ -13,7 +21,6 @@ function signing(req, res) {
 }
 
 
-// Verify the response from the client
 function verifying(req, res) {
   const { message, signature } = req.body;
 
@@ -32,6 +39,7 @@ function verifying(req, res) {
 }
 
 module.exports = {
+  getPublicData,
   signing,
   verifying
 };

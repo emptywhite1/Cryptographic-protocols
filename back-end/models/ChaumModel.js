@@ -1,5 +1,5 @@
 sql = require("../db/DbConnection");
-const {power, getRandomBigInt} = require("../utils/GeneralMath");
+const {power, stringToBigInt} = require("../utils/GeneralMath");
 
 const p = 547340383682117520798650035135656395481389963285775976108215099322508386141878177632883217495196614653381941734640444039617548576136943045116463713937n;
 const q = 827425321347070857571601850577711682088450109992424147819756234151141123241440124201411683469030722587483219307421445622021923428689831657385548035757n;
@@ -10,22 +10,17 @@ const privateKey = 2770484327603019572250164392118407877071229929818854896916037
 // const publicKey =5n
 // const privateKey =5n
 const ChaumModel = {
-  
+
+  getPublicData(){
+    return {modulo: n.toString(), publicKey: publicKey.toString()}
+  }, 
   signing(message){
     const signature = power(BigInt(message), privateKey, n)
     return signature 
   },
-   stringToBigInt (str, p) {
-    let asciiSum = "";
-    for (let i = 0; i < str.length; i++) {
-      asciiSum += str.charCodeAt(i);
-    }
-    return BigInt("0x" + asciiSum) % p;
-  },
   
   verifying(message, signature){
-   
-    const m = BigInt(message)
+    const m = stringToBigInt(message, n)
     const s = BigInt(signature)
     if(s == power(m, privateKey, n)){
       return true

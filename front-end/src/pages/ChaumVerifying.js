@@ -1,10 +1,9 @@
+import axios from "axios";
 import React, { useState } from "react";
 import Header from "../components/Header";
 import "../style/DiffieHellman.css";
-import { computeDHKey, stringToBigInt } from "../utility/Math-utils";
+import { BASE_URL } from "../utility/Constant";
 import { ChaumValidation } from "../utility/validation";
-import { BASE_URL, CHAUM_N } from "../utility/Constant";
-import axios from "axios";
 
 function ChaumVerifying() {
   const [message, setMessage] = useState("");
@@ -12,9 +11,8 @@ function ChaumVerifying() {
 
   const handleSubmit = (event) => {
     if (ChaumValidation(event)) {
-      const numericMessage = stringToBigInt(message, CHAUM_N);
       const data = {
-        message: numericMessage.toString(),
+        message: message,
         signature: signature,
       };
       axios

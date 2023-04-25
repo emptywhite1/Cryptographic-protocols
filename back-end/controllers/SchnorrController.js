@@ -1,6 +1,13 @@
 const SchnorrModel = require("../models/SchnorrModel");
 
-
+function getPublicData(req, res){
+  try {
+    res.json(SchnorrModel.getPublicData())
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Server error" });
+  }
+}
 // Register a user
 async function register(req, res) {
   const { username, password } = req.body;
@@ -64,6 +71,7 @@ function verifyResponse(req, res) {
 }
 
 module.exports = {
+  getPublicData,
   register,
   login,
   verifyResponse,

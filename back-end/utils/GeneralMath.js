@@ -21,15 +21,27 @@ function power(x, y, p) {
 }
 
 
-
-
 function getRandomBigInt(maxNum) {
-  const byteLength = maxNum.toString(16).length / 2;
-  let randNum = BigInt("0x" + crypto.randomBytes(byteLength).toString("hex"));
-  while (randNum === maxNum) {
-    randNum = BigInt("0x" + crypto.randomBytes(byteLength).toString("hex"));
+  const maxNumStr = maxNum.toString();
+  const maxNumLen = maxNumStr.length;
+  let randNumStr = "";
+
+  for (let i = 0; i < maxNumLen; i++) {
+    randNumStr += Math.floor(Math.random() * 10).toString();
   }
-  randNum %= maxNum;
+
+  const randNum = BigInt(randNumStr);
+
+  if (randNum >= maxNum || randNum === 0n) {
+    return getRandomBigInt(maxNum);
+  }
+
   return randNum;
+};
+
+function stringToBigInt(str, p) {
+  const hash = crypto.createHash('sha256').update(str).digest();
+  const num = BigInt(`0x${hash.toString('hex')}`);
+  return num % p;
 }
-module.exports = { power, getRandomBigInt };
+module.exports = { power, getRandomBigInt, stringToBigInt };

@@ -1,21 +1,33 @@
-import React, { useState } from "react";
-import { Button, Form, Row, Col } from "react-bootstrap";
+/* global BigInt */
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
-import { SchnorrValidation } from "../utility/validation";
+import { BASE_URL } from "../utility/Constant";
 import { computeSchnorrKey } from "../utility/Math-utils";
-import { SCHNORR_PRIME, SCHNORR_GENERATOR, BASE_URL } from "../utility/Constant";
+import { SchnorrValidation } from "../utility/validation";
 
 function SchnorrRegister() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [userPublicKey, setUserPublicKey] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modulo, setModulo] = useState(null);
+  const [generator, setGenerator] = useState(null);
+
+  useEffect(() => {
+    async function getPublicData() {
+      const response = await axios.get(`${BASE_URL}/schnorr/getPublicData`);
+      setModulo(BigInt(response.data.modulo))
+      setGenerator(BigInt(response.data.generator))
+    }
+    getPublicData();
+    
+  }, []);
 
   function handlePassword() {
     return computeSchnorrKey(
-      SCHNORR_PRIME,
-      SCHNORR_GENERATOR,
+      modulo,
+      generator,
       password
     ).toString();
   }
